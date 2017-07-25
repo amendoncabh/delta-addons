@@ -12,6 +12,7 @@
     'category': 'account',
     'version': '10.0.1.0.0',
     'depends': ['base',
+                'account_accountant',
                 'br_nfe'],
     
     'external_dependencies': {
@@ -24,6 +25,9 @@
         'views/views.xml',
         'views/templates.xml',
         'views/res_company.xml',
+        'views/account_fiscal_position.xml',
+        'views/account_journal.xml',
+        'data/br_nfce.xml',
     ],
     'installable': True,
     'aplication': True,
