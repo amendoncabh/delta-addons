@@ -10,7 +10,7 @@
     'author': "Raphael Rodrigues",
     'website': "",
     'category': 'account',
-    'version': '0.0.1.0.0',
+    'version': '10.0.1.0.0',
     'depends': ['base',
                 'br_nfe'],
     
@@ -23,6 +23,7 @@
     'data': [
         'views/views.xml',
         'views/templates.xml',
+        'views/res_company.xml',
     ],
     'installable': True,
     'aplication': True,
