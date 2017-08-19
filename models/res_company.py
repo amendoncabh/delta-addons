@@ -9,3 +9,4 @@ class ResCompany(models.Model):
     
     id_token_csc = fields.Char(string='Código CSC')
     csc = fields.Char(string=u'Código de Segurança do Contribuinte')
+    fiscal_position_default = fields.Many2one('account.fiscal.position', string=u'Posição Fiscal Padrão')

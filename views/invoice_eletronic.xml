@@ -6,8 +6,9 @@
 		<field name="inherit_id" ref="br_nfe.view_br_nfe_invoice_eletronic_form"/>
 		<field name="arch" type="xml">
 			<field name="recibo_nfe" position="after">
-				<field name="qrcode_hash" attrs="{'invisible': [('model', 'not in', ('65'))]}"/>
+				<field name="qrcode_hash" widget="url" attrs="{'invisible': [('model', 'not in', ('65'))]}"/>
 				<field name="qrcode_url" widget="url" attrs="{'invisible': [('model', 'not in', ('65'))]}"/>
+				<button name="print_danfe_report" type="object" string="Imprimir DANFCe"/>
 			</field>
 			<field name="informacoes_complementares" position="after">
 				<field name="metodo_pagamento"/>

@@ -8,4 +8,10 @@
 		<field name="active">True</field>
 		<field name="fiscal_type">product</field>
 	</record>
+	
+	<record id="br_customer_generic" model="res.partner">
+		<field name="name">CONSUMIDOR</field>
+		<field name="customer">True</field>
+		<field name="id">99999</field>
+	</record>
 </odoo>

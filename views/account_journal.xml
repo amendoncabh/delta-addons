@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+	<!-- 
 	<record id="br_nfce_account_journal" model="ir.ui.view">
 		<field name="name">br_nfce_account_journal</field>
 		<field name="model">account.journal</field>
@@ -10,4 +11,5 @@
 			</field>
 		</field>
 	</record>
+	 -->
 </odoo>

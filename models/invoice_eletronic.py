@@ -2,10 +2,11 @@
 # © 2017 Raphael Rodrigues <raphael0608@gmail.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields, models, api
+from odoo import fields, models, api, _
 from datetime import datetime
 from lxml import etree
 import os, base64
+from odoo.http import Controller, route, request
 
 try:
     from pytrustnfe.nfe import autorizar_nfe
@@ -35,6 +36,13 @@ class InvoiceEletronic(models.Model):
     qrcode_url = fields.Text(string='QR-Code URL')
     metodo_pagamento = fields.Selection(metodos, string='Método de Pagamento')
     
+    #função para buscar e gravar o qrcode e qrcode_hash    
+    def qrcode_generate(self):
+        qrcode = self.qrcode_hash
+        qrcode = qrcode.replace('&', '%26')
+        return qrcode
+
+        
     @api.multi
     def _hook_validation(self):
         errors = super(InvoiceEletronic, self)._hook_validation()
@@ -50,6 +58,15 @@ class InvoiceEletronic(models.Model):
             errors.append(u'CNPJ/CPF do cliente inválido')
         if len(self.serie) == 0:
             errors.append(u'Número de Série da Nota Fiscal inválido')
+        if self.model == '65' and self.partner_id.name != 'CONSUMIDOR':
+            return errors
+        
+        #Caso o consumidor não seja identificado não deve retornar os erros abaixo
+        errors.remove(u'Destinatário / Endereço - Logradouro')
+        errors.remove(u'Destinatário / Endereço - Número')
+        errors.remove(u'Destinatário / Endereço - País')
+         
+        
         return errors
     
     @api.multi
@@ -65,6 +82,11 @@ class InvoiceEletronic(models.Model):
         vals['codigo_seguranca'] = codigo_seguranca
         if self.model == '65':
             vals['pag'] = self.metodo_pagamento
+            
+        print 'Fazendo Teste'
+        if self.model == '65' and self.partner_id.name == 'CONSUMIDOR':
+            print 'TESTE OK'
+            del(vals['dest'])
         
         return vals
     
@@ -104,7 +126,8 @@ class InvoiceEletronic(models.Model):
             xml = resposta['sent_xml']
             qr_code = etree.XML(resposta['sent_xml'])
             qr_code = qr_code.find(".//{http://www.portalfiscal.inf.br/nfe}qrCode")
-            self.qrcode_url = qr_code.text
+            self.qrcode_hash = qr_code.text
+            self.qrcode_url = qr_code.text.split('?')[0]
         
         if retorno.cStat == 103:
             obj = {
@@ -154,3 +177,21 @@ class InvoiceEletronic(models.Model):
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
+            
+    #função para gerar a impressão direta
+    @api.multi
+    def print_danfe_report(self):
+        
+        datas = {'ids': self.ids}
+        
+        return {
+            'type':'ir.actions.client',
+            'tag':'aek_browser_pdf',
+            'report_name': 'br_nfce.main_template_br_nfce_danfce',
+            'ids': self.ids,
+            }
+        
+    '''    
+        self.env['report'].get_pdf(self.ids,'br_nfce.main_template_br_nfce_danfce')
+    '''
+            

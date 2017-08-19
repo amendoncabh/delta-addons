@@ -6,3 +6,4 @@ from . import account_journal
 from . import invoice_eletronic
 from . import account_invoice
 from . import sale_order
+from . import account_config_settings

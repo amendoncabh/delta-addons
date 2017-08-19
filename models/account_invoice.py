@@ -30,5 +30,8 @@ class AccountInvoice(models.Model):
         vals = super(AccountInvoice, self)._prepare_edoc_vals(invoice)
         if vals['model'] == '65':
             vals['metodo_pagamento'] = invoice.metodo_pagamento
-        
+        print 'fazer teste'
+        if invoice.partner_id.name == 'CONSUMIDOR':
+            print 'teste ok'
+            vals['ind_dest'] = '1'
         return vals
