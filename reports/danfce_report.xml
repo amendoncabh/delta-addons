@@ -12,30 +12,27 @@
 		<field name="format">custom</field>
 		<field name="orientation">Portrait</field>
 		<field name="page_width">80</field>
-		<field name="page_height">297</field>
-		<field name="margin_top">1.0</field>
-		<field name="margin_left">1.0</field>
-		<field name="margin_right">1.0</field>
-		<field name="margin_bottom">1.0</field> 
+		<field name="page_height">200</field>
+		<field name="margin_top">0.2</field>
+		<field name="margin_left">0.2</field>
+		<field name="margin_right">0.2</field>
+		<field name="margin_bottom">0.2</field> 
 	</record>
 	
 	<record id="report_br_nfce_danfce" model="ir.actions.report.xml">
-		<field name="paperformat_id" ref="paperformat_br_nfce_danfce"/>
-		<field name="name">Impressão de Danfce</field>
+		<field name="paperformat_id" ref="paperformat_br_nfce_danfce"/>	
+		<field name="name">Impressão de DANFCe</field>
 	</record>
 	
 	<template id="main_template_br_nfce_danfce">
         <t t-call="report.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="br_nfce.template_br_nfce_danfce" t-lang="o.partner_id.lang"/>
-            </t>
-        </t>
-    </template>
-	
-	<template id="main_template_br_nfe_danfe_danfce">
-        <t t-call="report.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="br_nfe.template_br_nfe_danfe" t-lang="o.partner_id.lang"/>
+            	<t t-if="o.model == '65'">
+                	<t t-call="br_nfce.template_br_nfce_danfce" t-lang="o.partner_id.lang"/>
+                </t>
+                <t t-if="o.model != '65'">
+                	<t t-call="br_nfe.template_br_nfe_danfe" t-lang="o.partner_id.lang"/>
+                </t>
             </t>
         </t>
     </template>
