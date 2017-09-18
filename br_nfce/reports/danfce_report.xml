@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<template id="danfce_assets_backend" name="Danfce assets" inherit_id="report.assets_common">
+		<xpath expr="." position="inside">
+			<link rel="stylesheet" type="text/css" href="br_nfce/static/css/danfce.css"/>
+		</xpath>
+	</template>
+	
+	<record id="paperformat_br_nfce_danfce" model="report.paperformat">
+		<field name="name">Formato DANFCe</field>
+		<field name="default" eval="True"/>
+		<field name="format">custom</field>
+		<field name="orientation">Portrait</field>
+		<field name="page_width">80</field>
+		<field name="page_height">200</field>
+		<field name="margin_top">0.2</field>
+		<field name="margin_left">0.2</field>
+		<field name="margin_right">0.2</field>
+		<field name="margin_bottom">0.2</field> 
+	</record>
+	
+	<record id="report_br_nfce_danfce" model="ir.actions.report.xml">
+		<field name="paperformat_id" ref="paperformat_br_nfce_danfce"/>	
+		<field name="name">Impressão de DANFCe</field>
+	</record>
+	
+	<template id="main_template_br_nfce_danfce">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+            	<t t-if="o.model == '65'">
+                	<t t-call="br_nfce.template_br_nfce_danfce" t-lang="o.partner_id.lang"/>
+                </t>
+                <t t-if="o.model != '65'">
+                	<t t-call="br_nfe.template_br_nfe_danfe" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </t>
+    </template>
+	
+	<template id="template_br_nfce_danfce">
+		<t t-if="o.model == '65'">
+		<div class="page">
+			<table width="100%">
+				<tr>
+					<td><img t-att-src="'data:image/png;base64,%s' % o.company_id.logo" width="82"/></td>
+					<td colspan="2"><span t-field="o.company_id.legal_name"/><br/>
+									<span>CNPJ: <t t-raw="o.company_id.cnpj_cpf"/> I.E.: <t t-raw="o.company_id.inscr_est"/></span><br/>
+									<span><t t-raw="o.company_id.street"/> Nº <t t-raw="o.company_id.number"/></span><br/>
+									<span><t t-raw="o.company_id.street2"/></span><br/>
+									<span><t t-raw="o.company_id.district"/>, <t t-raw="o.company_id.city_id.name"/></span>
+									<span>, <t t-raw="o.company_id.state_id.code"/></span><br/>
+									<span>CEP: <t t-raw="o.company_id.zip"/> <t t-raw="o.company_id.phone"/></span>
+					</td>
+				</tr>
+			</table>
+			<!-- Divisão II – Informações Fixas do DANFE NFC-e -->
+			<table width="100%">
+				<tr>
+					<td colspan="3" class="tCenter">
+						<strong>DANFE NFC-e - DOCUMENTO AUXILIAR DA NOTA FISCAL DE CONSUMIDOR ELETRÔNICA</strong>
+					</td>
+				</tr>
+			</table>
+			<!-- Divisão III – Informações de Detalhe da Venda -->
+			<table width='100%'>
+			<!-- CABEÇALHO DA DIVISÃO III -->
+				<thead>
+					<tr><td>#</td><td>CÓDIGO</td>
+					<td>DESCRIÇÃO</td><td>QTDE.</td>
+					<td>UN.</td><td>VL. UNIT.</td>
+					<td>VL. TOTAL</td>
+					</tr>
+				</thead>
+				<!-- ITENS -->
+				<t t-foreach="o.eletronic_item_ids" t-as="e">
+				<tr>
+					<td class="tLeft"><span t-esc="e_index + 1"/></td>
+					<td class="tCenter"><span t-esc="e.product_id.default_code.replace('.', '')"/></td>
+					<td class="tLeft"><span t-raw="e.product_id.with_context(display_default_code=False).name_get()[0][1]"/></td>	
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td class="tRight"><span t-field="e.quantidade"/></td>
+					<td class="tRight"><span t-field="e.uom_id"/></td>
+					<td class="tRight"><span t-field="e.preco_unitario" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+					<td class="tRight"><span t-field="e.valor_liquido" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+				</tr>
+				</t>
+			</table>
+			<!-- Divisão IV – Informações de Total do DANFE NFC-e -->
+			<table width="100%">
+			<tr>
+				<td class="tLeft">Qtde. Total de Itens</td>
+						<td class="tRight">
+							<span t-esc="sum(l.quantidade for l in o.eletronic_item_ids.filtered(lambda x: x.quantidade))"/>
+						</td>
+			</tr>
+			</table>
+			<table width="100%">
+				<tr>
+					<td class="tLeft">Valor Total R$</td>
+					<td class="tRight"><span t-field="o.valor_bruto"/></td>
+				</tr>
+				<!-- Acréscimos (frete, seguro e outras despesas)/Desconto R$ (Exibe somente se houver!) -->
+				<tr>
+					<th class="tLeft">FORMA DE PAGAMENTO</th>
+					<th class="tRight">VALOR PAGO</th>
+				</tr>
+				<tr>
+					<td class="tLeft"><span t-field="o.metodo_pagamento"/></td>
+					<td class="tRight"><span t-field="o.valor_bruto"/></td>
+				</tr>
+			</table>
+			<!-- Divisão V – Informações dos Tributos no DANFE NFC-e -->
+			<table width="100%">
+				<tr>
+					<td colspan="3" class="tCenter">
+						Tributos totais incidentes (Lei Federal 12.741/2012) 
+						<span t-field="o.valor_estimado_tributos" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+					</td>
+				</tr>
+			</table>
+			<table width="100%" class="noBorder">
+				<tr>
+					<td colspan="3" class="menor tCenter"><strong t-field="o.informacoes_complementares" style="text-transform: none;"/></td>
+				</tr>
+			</table>
+			<!-- Divisão VI – Mensagem Fiscal e Informações da Consulta via Chave de Acesso -->
+			<table width="100%">
+				<tr>
+					<td colspan="3"><strong>INFORMAÇÕES ADICIONAIS DE INTERESSE DO FISCO</strong>
+						<br/>infAdFisco
+					</td>
+				</tr>
+			</table>
+			<!-- Divisão VI – Informações de Identificação da NFC-e e do Protocolo de Autorização -->
+			<table width="100%">
+				<tr>
+					<td colspan="3"><strong>NFC-e nº <t t-raw="o.numero_nfe"/>   Série <t t-esc="o.serie.code.zfill(3)"/> <span t-field="o.data_emissao" t-options ='{"format": "dd/MM/yyyy-hh:mm:ss"}'/>
+					<br/>Via do Consumidor</strong></td>
+				</tr>
+				<tr>
+					<td colspan="3"><strong>Consulte pela Chave de Acesso em</strong></td>
+				</tr>
+				<tr>
+					<td colspan="3"><strong><span t-field="o.qrcode_url"/></strong></td>
+				</tr>
+				<tr>
+        			<td colspan="3"><span t-field="o.chave_nfe_danfe"/></td>
+        		</tr>
+        	</table>
+        	<table width="100%">
+        		<tr>
+        			<td colspan="3"><strong>Protocolo de Autorização</strong></td>
+        			<td colspan="3"><span t-field="o.protocolo_nfe"></span> |
+        				<span t-field="o.data_autorizacao"></span></td>
+        		</tr>
+			</table>
+			<!-- Divisão VII – Informações sobre o Consumidor -->
+			<table t-if="o.commercial_partner_id.name != 'CONSUMIDOR'" width='100%'>
+				<tr><td colspan="3"><strong>CONSUMIDOR</strong><br/>
+					CPF: <span t-field="o.commercial_partner_id.cnpj_cpf"/> 
+					<span t-raw="o.commercial_partner_id.legal_name or o.commercial_partner_id.name"/></td></tr>
+				<tr><td colspan="3"><span t-field="o.commercial_partner_id.street"/>, 
+						<span t-field="o.commercial_partner_id.number"></span>, 
+						<span t-field="o.commercial_partner_id.district"></span><br/>
+						<span t-field="o.commercial_partner_id.city_id.name"></span> -
+						<span t-field="o.commercial_partner_id.state_id.code"></span><br/>
+						CEP: <span t-field="o.commercial_partner_id.zip"></span> - Tel.: <span t-raw="o.commercial_partner_id.phone or o.commercial_partner_id.mobile"></span>
+					</td>
+				</tr>
+			</table>
+			
+			<!-- Divisão V – Informações da consulta via QR Code -->
+			<table width="100%">
+				<tr>
+					<td colspan="3"><img t-att-src="'/report/barcode/?type=%s&amp;width=%s&amp;height=%s&amp;value=%s' %('QR', 200, 200, o.qrcode_generate())"/></td>
+				</tr>
+			</table>
+			<table width="100%" class="noBorder">
+				<td colspan="3">Delta Open Solutions - www.deltaos.com.br<br/>
+					(94) 99293-9227</td>
+			</table>
+		</div>
+		</t>
+	</template>
+	
+	
+</odoo>

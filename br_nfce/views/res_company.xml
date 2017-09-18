@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="br_nfce_res_company_form_view" model="ir.ui.view">
+		<field name="name">br_nfce.res_company.form.view</field>
+		<field name="model">res.company</field>
+		<field name="inherit_id" ref="br_base.view_company_form_inherited"/>
+		<field name="arch" type="xml">
+			<field name="nfe_a1_password" position="after">
+				<field name="id_token_csc"/>
+				<field name="csc"/>
+			</field>
+			<group name="cnae" position="before">
+				<group name="fiscal_position" string="Posição Fiscal Padrão">
+					<field name="fiscal_position_default"/>
+				</group>
+			</group>
+		</field>
+	</record>
+</odoo>
