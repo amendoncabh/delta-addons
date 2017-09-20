@@ -12,7 +12,7 @@
     'category': 'account',
     'version': '10.0.1.0.0',
     'depends': ['base',
-		'sale',
+                'br_sale',
                 'account_accountant',
                 'br_nfe'],
     
