@@ -164,7 +164,8 @@ class InvoiceEletronic(models.Model):
             # Duplicidade de NF-e significa que a nota já está emitida
             # TODO Buscar o protocolo de autorização, por hora só finalizar
             if self.codigo_retorno == '204':
-                self.write({'state': 'done', 'codigo_retorno': '100',
+                self.write({'state': 'done', 
+                            'codigo_retorno': '100',
                             'nfe_exception': False,
                             'mensagem_retorno': 'Autorizado o uso da NF-e'})
 
@@ -179,21 +180,4 @@ class InvoiceEletronic(models.Model):
             self._create_attachment('rec', self, resposta_recibo['sent_xml'])
             self._create_attachment('rec-ret', self,
                                     resposta_recibo['received_xml'])
-            
-    #função para gerar a impressão direta
-    @api.multi
-    def print_danfe_report(self):
-        
-        datas = {'ids': self.ids}
-        
-        return {
-            'type':'ir.actions.client',
-            'tag':'aek_browser_pdf',
-            'report_name': 'br_nfce.main_template_br_nfce_danfce',
-            'ids': self.ids,
-            }
-        
-    '''    
-        self.env['report'].get_pdf(self.ids,'br_nfce.main_template_br_nfce_danfce')
-    '''
             
