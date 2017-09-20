@@ -83,10 +83,9 @@ class InvoiceEletronic(models.Model):
         if self.model == '65':
             vals['pag'] = self.metodo_pagamento
             
-        print 'Fazendo Teste'
         if self.model == '65' and self.partner_id.name == 'CONSUMIDOR':
-            print 'TESTE OK'
             del(vals['dest'])
+            
         
         return vals
     
@@ -96,6 +95,9 @@ class InvoiceEletronic(models.Model):
             item, invoice)
         if self.model not in ('55', '65'):
             return res
+        
+        if self.model == ('65'):
+            del(res['imposto']['II'])
 
         if self.ambiente == 'homologacao':
             res['prod']['xProd'] = 'NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL' 
