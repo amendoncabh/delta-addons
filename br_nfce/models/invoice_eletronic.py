@@ -106,12 +106,13 @@ class InvoiceEletronic(models.Model):
             
     @api.multi
     def action_send_eletronic_invoice(self):
+        super(InvoiceEletronic, self).action_send_eletronic_invoice()
+
+        if self.model not in ('55', '65') or self.state in ('done', 'denied', 'cancel'):
+            return
+
         self.state = 'error'
         self.data_emissao = datetime.now()
-        #uper(InvoiceEletronic, self).action_send_eletronic_invoice()
-
-        if self.model not in ('55', '65'):
-            return
 
         nfe_values = self._prepare_eletronic_invoice_values()
         lote = self._prepare_lote(self.id, nfe_values)
