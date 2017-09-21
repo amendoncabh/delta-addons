@@ -123,7 +123,8 @@ class InvoiceEletronic(models.Model):
 
         resposta_recibo = None
         resposta = autorizar_nfe(certificado, self.model, **lote)
-        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult.retEnviNFe
+        retorno = resposta['object'].Body.nfeAutorizacaoLoteResult
+        retorno = retorno.getchildren()[0]
         
         if self.model == '65':
             xml = resposta['sent_xml']
