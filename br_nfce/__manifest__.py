@@ -12,8 +12,8 @@
     'category': 'account',
     'version': '10.0.1.0.1b',
     'depends': ['base',
-                'br_sale',
                 'account_accountant',
+                'br_sale',
                 'br_nfe'],
     
     'external_dependencies': {
