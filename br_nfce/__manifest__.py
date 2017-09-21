@@ -10,7 +10,7 @@
     'author': "Raphael Rodrigues",
     'website': "",
     'category': 'account',
-    'version': '10.0.1.0.0',
+    'version': '10.0.1.0.1b',
     'depends': ['base',
                 'br_sale',
                 'account_accountant',
